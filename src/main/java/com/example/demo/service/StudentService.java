@@ -21,10 +21,10 @@ import com.example.demo.repository.StudentReporitory;
 public class StudentService {
 	@Autowired
 	StudentReporitory studentRepository;
-	
-	private final String EMAIL_PARTTERN = "^(.+)@(\\\\S+)$";
-
-    private final Pattern pattern = Pattern.compile(EMAIL_PARTTERN);
+	final String PHONE_REGEX = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+	public final Pattern PHONE_VALIDATE = Pattern.compile(PHONE_REGEX, Pattern.CASE_INSENSITIVE);
+	public final Pattern VALID_EMAIL_ADDRESS_REGEX = 
+		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 	public ResponseContract<?> getById(int id) {
 		try {
 			return new ResponseContract<Student>(HttpStatus.OK.toString(), "", studentRepository.getStudentById(id));
@@ -62,8 +62,8 @@ public class StudentService {
 	
 	public ResponseContract<?> insert(Student student){
 		try {
-			if(!isValid(student.getEmail())) {
-				return new ResponseContract<Integer>(null, "Email should be valid", -1);
+			if(!isValid(student.getEmail()) || !isValidPhone(student.getPhone())) {
+				return new ResponseContract<Integer>(null, "Email or phone should be valid", -1);
 			}else {
 				return new ResponseContract<Integer>(HttpStatus.OK.toString(), "", studentRepository.insert(student));
 			}
@@ -92,7 +92,11 @@ public class StudentService {
 		}
 	}
 	private  boolean isValid(final String email) {
-        Matcher matcher = pattern.matcher(email);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+        return matcher.matches();
+    }
+	private  boolean isValidPhone(final String phone) {
+        Matcher matcher = PHONE_VALIDATE.matcher(phone);
         return matcher.matches();
     }
 }
