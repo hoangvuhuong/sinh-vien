@@ -1,5 +1,4 @@
 package com.example.demo.model;
-
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,6 @@ public class Student {
 	private String email;
 	@NotNull
 	private int classId;
-	@NotNull
 	private int identityCardId;
 	@DateTimeFormat
 	private Date birth;

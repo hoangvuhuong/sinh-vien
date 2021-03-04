@@ -14,7 +14,6 @@ public class IdentityCard {
 	private Date birth;
 	@NotNull
 	private String place;
-	@NotNull
 	private int studentId;
 	public int getId() {
 		return id;

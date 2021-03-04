@@ -87,7 +87,7 @@ public class StudentReporitory {
 		return null;
 	}
 
-	public List<Classes> getListClassById(int id) {
+	public List<Classes> getListClassByStudentId(int id) {
 		try {
 			String sql = "SELECT classes.class_id, classes.class_name, classes.class_slot FROM "
 					+ "classes INNER JOIN students ON classes.student_id = students.student_id AND "
@@ -132,8 +132,8 @@ public class StudentReporitory {
 			sqlUpdate.declareParameter(new SqlParameter("student_sex", Types.BOOLEAN));
 			sqlUpdate.setReturnGeneratedKeys(true);
 			sqlUpdate.compile();
-			Object[] arr = {student.getName(), student.getEmail(), student.getPhone(), student.getClassId(),
-					student.getIdentityCardId(), student.getStudentBirth(), student.getSex()};
+			Object[] arr = {student.getIdentityCard().getName(), student.getEmail(), student.getPhone(), student.getClassId(),
+					student.getIdentityCardId(), student.getIdentityCard().getBirth(), student.getSex()};
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			sqlUpdate.update(arr, keyHolder);
 			int keyStudent = keyHolder.getKey().intValue();
@@ -146,6 +146,7 @@ public class StudentReporitory {
 	}
 
 	public int delete(int id) {
+		this.deleteCardByStudentId(id);
 		String sql = "DELETE FROM students WHERE student_id = ?";
 		SqlUpdate sqlUpdate = new SqlUpdate(dataSource, sql);
 		sqlUpdate.declareParameter(new SqlParameter("student_id", Types.INTEGER));
@@ -258,5 +259,18 @@ public class StudentReporitory {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public int deleteCardByStudentId(int studentId) {
+		try {
+			String sql = "DELETE FROM identity_cards WHERE student_id = ?";
+			SqlUpdate sqlUpdate = new SqlUpdate(dataSource, sql);
+			sqlUpdate.declareParameter(new SqlParameter("student_id", Types.VARCHAR));
+			sqlUpdate.compile();
+			return sqlUpdate.update(studentId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }
