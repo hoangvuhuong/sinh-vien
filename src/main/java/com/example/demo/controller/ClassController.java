@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,8 +26,8 @@ public class ClassController {
 		
 	}
 	@GetMapping("/class")
-	public ResponseContract<?> getAllClass(){
-		return classService.getAllClass();
+	public ResponseContract<?> getAllClass(@RequestParam(name = "limit") int limit, @RequestParam(name = "offset") int offset){
+		return classService.getAllClass(limit, offset);
 		
 	}
 	

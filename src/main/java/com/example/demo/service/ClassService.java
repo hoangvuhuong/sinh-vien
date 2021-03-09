@@ -24,9 +24,9 @@ public class ClassService {
 		}
 	}
 	
-	public ResponseContract<?> getAllClass(){
+	public ResponseContract<?> getAllClass(int limit, int offset){
 		try {
-			 return new ResponseContract<List<Classes>>(HttpStatus.OK.toString(), "", classRepository.getAllClass());
+			 return new ResponseContract<List<Classes>>(HttpStatus.OK.toString(), "", classRepository.getAllClass(limit, offset));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseContract<Classes>("", e.getMessage(), null);
@@ -44,10 +44,15 @@ public class ClassService {
 	
 	public ResponseContract<?> update(Classes iclass){
 		try {
-			return new ResponseContract<Integer>(HttpStatus.OK.toString(), "", classRepository.update(iclass));
+			int rows = classRepository.update(iclass);
+			if(rows <= 0) {
+				return new ResponseContract<Integer>(HttpStatus.OK.toString(), "Cap nhat thai bai",rows );
+			}else {
+				return new ResponseContract<Integer>(HttpStatus.OK.toString(), "", rows);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseContract<Integer>("", e.getMessage(), null);
+			return new ResponseContract<Integer>("update that bai", e.getMessage(), null);
 		}
 	}
 	

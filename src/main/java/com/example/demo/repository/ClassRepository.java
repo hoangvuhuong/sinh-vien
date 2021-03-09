@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
@@ -24,8 +25,8 @@ public class ClassRepository {
 	
 	public int insert(Classes iclass) {
 		try {
-			String sql = "INSERT INTO demo.classes (class_name, class_slot)"
-					+ " VALUES (?, ?)";
+			String sql = "INSERT INTO demo.classes (class_name, class_slot, time_stamp)"
+					+ " VALUES (?, ?, CURRENT_TIMESTAMP())";
 			SqlUpdate sqlUpdate = new SqlUpdate(dataSource,sql);
 			sqlUpdate.declareParameter(new SqlParameter("class_name", Types.VARCHAR));
 			sqlUpdate.declareParameter(new SqlParameter("class_slot", Types.INTEGER));
@@ -38,13 +39,15 @@ public class ClassRepository {
 	}
 	public int update(Classes iclass) {
 		try {
-			String sql = "UPDATE classes SET class_name = ?, class_slot = ? WHERE class_id = ?";
+			String sql = "UPDATE classes SET time_stamp = CURRENT_TIMESTAMP(), class_name = ?,"
+					+ " class_slot = ? WHERE class_id = ? AND time_stamp = ?";
 			SqlUpdate sqlUpdate = new SqlUpdate(dataSource,sql);
 			sqlUpdate.declareParameter(new SqlParameter("class_name", Types.VARCHAR));
 			sqlUpdate.declareParameter(new SqlParameter("class_slot", Types.INTEGER));
 			sqlUpdate.declareParameter(new SqlParameter("class_id", Types.INTEGER));
+			sqlUpdate.declareParameter(new SqlParameter("time_stamp", Types.TIMESTAMP));
 		    sqlUpdate.compile();
-		    return sqlUpdate.update(iclass.getName(), iclass.getSlot(),iclass.getId());
+		    return sqlUpdate.update(iclass.getName(), iclass.getSlot(),iclass.getId(), iclass.getTimeStamp());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,6 +77,7 @@ public class ClassRepository {
 					classes.setId(rs.getInt("class_id"));
 					classes.setName(rs.getString("class_name"));
 					classes.setSlot(rs.getInt("class_slot"));
+					classes.setTimeStamp(rs.getTimestamp("time_stamp"));
 					return classes;
 				}
 			};
@@ -89,9 +93,9 @@ public class ClassRepository {
 		return null;
 	}
 	
-	public List<Classes> getAllClass() {
+	public List<Classes> getAllClass(int limit, int offset) {
 		try {
-			String sql = "SELECT * FROM classes";
+			String sql = "SELECT * FROM classes LIMIT " + limit + " OFFSET " + offset ;
 			MappingSqlQuery<Classes> mappingSql = new MappingSqlQuery<Classes>(){
 				@Override
 				protected Classes mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -99,6 +103,7 @@ public class ClassRepository {
 					classes.setId(rs.getInt("class_id"));
 					classes.setName(rs.getString("class_name"));
 					classes.setSlot(rs.getInt("class_slot"));
+					classes.setTimeStamp(rs.getTimestamp("time_stamp"));
 					return classes;
 				}
 			};
