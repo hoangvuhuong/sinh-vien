@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.contract.ResponseContract;
+import com.example.demo.exception.CommonDomainException;
 import com.example.demo.model.Classes;
 import com.example.demo.service.ClassService;
 
@@ -21,28 +23,28 @@ public class ClassController {
 	ClassService classService;
 	
 	@GetMapping("/class/{id}")
-	public ResponseContract<?> getClass(@PathVariable int id){
-		return classService.getClass(id);
+	public ResponseEntity<?> getClass(@PathVariable int id) throws CommonDomainException{
+		return ResponseEntity.ok().body(classService.getClass(id));
 		
 	}
 	@GetMapping("/class")
-	public ResponseContract<?> getAllClass(@RequestParam(name = "limit") int limit, @RequestParam(name = "offset") int offset){
-		return classService.getAllClass(limit, offset);
+	public ResponseEntity<?> getAllClass(@RequestParam(name = "size") int limit, @RequestParam(name = "page") int offset){
+		return ResponseEntity.ok().body(classService.getAllClass(limit, offset)) ;
 		
 	}
 	
 	@PostMapping("/create-class")
-	public ResponseContract<?> insert(@RequestBody Classes iclass){
-		return classService.insert(iclass);
+	public ResponseEntity<?> insert(@RequestBody Classes iclass) throws CommonDomainException{
+		return ResponseEntity.ok().body(classService.insert(iclass));
 	}
 	
 	@PutMapping("/update-class")
-	public ResponseContract<?> update(@RequestBody Classes iclass){
-		return classService.update(iclass);
+	public ResponseEntity<?> update(@RequestBody Classes iclass) throws CommonDomainException{
+		return ResponseEntity.ok().body(classService.update(iclass));
 	}
 	
 	@DeleteMapping("/delete-class/{id}")
-	public ResponseContract<?> delete(@PathVariable int id){
-		return classService.delete(id);
+	public ResponseEntity<?> delete(@PathVariable int id) throws CommonDomainException{
+		return ResponseEntity.ok().body(classService.delete(id));
 	}
 }

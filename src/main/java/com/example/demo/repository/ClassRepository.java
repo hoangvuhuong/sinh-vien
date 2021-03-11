@@ -24,7 +24,6 @@ public class ClassRepository {
 	private DataSource dataSource;
 	
 	public int insert(Classes iclass) {
-		try {
 			String sql = "INSERT INTO demo.classes (class_name, class_slot, time_stamp)"
 					+ " VALUES (?, ?, CURRENT_TIMESTAMP())";
 			SqlUpdate sqlUpdate = new SqlUpdate(dataSource,sql);
@@ -32,13 +31,9 @@ public class ClassRepository {
 			sqlUpdate.declareParameter(new SqlParameter("class_slot", Types.INTEGER));
 		    sqlUpdate.compile();
 			return sqlUpdate.update(iclass.getName(), iclass.getSlot());
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 	public int update(Classes iclass) {
-		try {
+		
 			String sql = "UPDATE classes SET time_stamp = CURRENT_TIMESTAMP(), class_name = ?,"
 					+ " class_slot = ? WHERE class_id = ? AND time_stamp = ?";
 			SqlUpdate sqlUpdate = new SqlUpdate(dataSource,sql);
@@ -48,27 +43,19 @@ public class ClassRepository {
 			sqlUpdate.declareParameter(new SqlParameter("time_stamp", Types.TIMESTAMP));
 		    sqlUpdate.compile();
 		    return sqlUpdate.update(iclass.getName(), iclass.getSlot(),iclass.getId(), iclass.getTimeStamp());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
+		
+		
 	}
 	
 	public int delete(int id) {
-		try {
 			String sql = "DELETE FROM classes WHERE class_id = ?";
 			SqlUpdate sqlUpdate = new SqlUpdate(dataSource,sql);
 			sqlUpdate.declareParameter(new SqlParameter("class_id", Types.INTEGER));
 		    sqlUpdate.compile();
 		    return sqlUpdate.update(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 	
 	public Classes getClasses(int id) {
-		try {
 			String sql = "SELECT * FROM classes WHERE class_id = ?";
 			MappingSqlQuery<Classes> mappingSql = new MappingSqlQuery<Classes>(){
 				@Override
@@ -86,11 +73,6 @@ public class ClassRepository {
 			mappingSql.declareParameter(new SqlParameter("class_id", Types.INTEGER));
 			mappingSql.compile();
 			return mappingSql.findObject(id);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	public List<Classes> getAllClass(int limit, int offset) {
